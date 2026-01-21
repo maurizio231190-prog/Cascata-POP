@@ -1,0 +1,1107 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cascata Pop — Kid (Extra Easy)</title>
+  <style>
+    :root{
+      --sky1:#b9f3ff;
+      --sky2:#ffd6f3;
+      --sky3:#fff2b8;
+      --ink:#2a2a2a;
+      --shadow: 0 18px 40px rgba(0,0,0,.18);
+      --card:#ffffffcc;
+      --card2:#ffffffa8;
+      --line:#0000001a;
+      --btn:#ffffffd8;
+      --btn2:#ffffffc0;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-rounded, "SF Pro Rounded", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 520px at 18% 10%, var(--sky1), transparent 60%),
+        radial-gradient(900px 520px at 82% 12%, var(--sky2), transparent 60%),
+        radial-gradient(900px 520px at 50% 98%, var(--sky3), transparent 60%),
+        linear-gradient(180deg, #fff, #f7fbff);
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px;
+      display:grid;
+      grid-template-columns: 340px 1fr;
+      gap:12px;
+    }
+    @media (max-width: 920px){ .wrap{grid-template-columns:1fr} }
+
+    .card{
+      background: linear-gradient(180deg, var(--card), var(--card2));
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .pad{padding:14px}
+    h1{margin:0 0 6px 0; font-size:18px; letter-spacing:.2px}
+    .sub{color:#444; font-size:13px; line-height:1.35}
+
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px}
+    select, button, input[type="checkbox"]{
+      background:var(--btn);
+      border:1px solid #00000012;
+      color:var(--ink);
+      border-radius:16px;
+      padding:10px 12px;
+      outline:none;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+    }
+    select{min-width:220px}
+    button{cursor:pointer; user-select:none; font-weight:900; transition: transform .06s ease;}
+    button:active{transform: translateY(2px) scale(0.99)}
+    .btn-primary{background:#d9fff0}
+    .btn-warn{background:#ffe6c7}
+    .btn-ghost{background:var(--btn2)}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#ffffffc7;
+      border:1px solid #00000010;
+      font-size:12px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+    }
+
+    .kpis{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;}
+    .kpi{
+      padding:10px;
+      border-radius:18px;
+      background:#ffffffc7;
+      border:1px solid #00000010;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+    }
+    .kpi .n{font-size:18px; font-weight:1000}
+    .kpi .t{font-size:12px; color:#555}
+
+    .hint{
+      margin-top:12px;
+      padding:10px;
+      border-radius:18px;
+      background:#ffffffc7;
+      border:1px dashed #0000001a;
+      color:#444;
+      font-size:12px;
+      line-height:1.35;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+    }
+
+    .topbar{
+      display:flex; justify-content:space-between; align-items:center;
+      gap:10px; flex-wrap:wrap;
+      padding:12px 14px;
+      background: linear-gradient(90deg, #fff, #fff0);
+      border-bottom:1px solid #00000010;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#ffffffd6;
+      border:1px solid #00000010;
+      box-shadow: 0 10px 18px rgba(0,0,0,.06);
+      font-size:12px;
+    }
+
+    .arena{
+      position:relative;
+      height:540px;
+      overflow:hidden;
+      background:
+        radial-gradient(520px 280px at 18% 18%, rgba(255,255,255,.85), transparent 60%),
+        radial-gradient(520px 280px at 82% 22%, rgba(255,255,255,.70), transparent 60%),
+        linear-gradient(180deg, #c8f7ff, #ffe4f4 55%, #fff6c5 100%);
+    }
+    @media (max-width: 920px){ .arena{height:500px} }
+
+    .cloud{
+      position:absolute;
+      top:18px;
+      width:220px; height:70px;
+      background:rgba(255,255,255,.75);
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:999px;
+      box-shadow: 0 18px 28px rgba(0,0,0,.07);
+      opacity:.85;
+      animation: float 12s linear infinite;
+    }
+    .cloud::before,.cloud::after{
+      content:"";
+      position:absolute;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(0,0,0,.05);
+      border-radius:999px;
+    }
+    .cloud::before{ width:90px; height:60px; left:18px; top:-18px; }
+    .cloud::after { width:110px; height:70px; left:90px; top:-26px; }
+    @keyframes float{
+      0%{transform: translateX(-280px)}
+      100%{transform: translateX(1280px)}
+    }
+
+    .lanes{
+      position:absolute; inset:0;
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      pointer-events:none;
+      opacity:.33;
+    }
+    .lane{border-left:2px dashed rgba(0,0,0,.07)}
+    .lane:first-child{border-left:none}
+
+    .floor{
+      position:absolute; left:0; right:0; bottom:0;
+      height:140px;
+      background: linear-gradient(180deg, rgba(255,255,255,0), rgba(0,0,0,.10));
+      pointer-events:none;
+    }
+
+    .arenaInner{
+      position:absolute; inset:0;
+      transform-origin:50% 60%;
+      will-change: transform;
+    }
+    .shake{ animation: shake .18s ease both; }
+    @keyframes shake{
+      0%{transform: translate(0,0) rotate(0deg)}
+      25%{transform: translate(6px,1px) rotate(0.6deg)}
+      55%{transform: translate(-6px,0px) rotate(-0.6deg)}
+      100%{transform: translate(0,0) rotate(0deg)}
+    }
+
+    .player{
+      position:absolute;
+      bottom:28px;
+      width:150px; height:150px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: left .10s cubic-bezier(.2,.9,.25,1);
+      z-index:4;
+      will-change:left, transform;
+      filter: drop-shadow(0 18px 18px rgba(0,0,0,.16));
+    }
+    .player.bop{ animation: bop .18s ease both; }
+    @keyframes bop{
+      0%{transform: scale(1)}
+      50%{transform: scale(1.08)}
+      100%{transform: scale(1)}
+    }
+    .avatar{
+      width:140px; height:140px;
+      border-radius:999px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(0,0,0,.08);
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 12px 22px rgba(0,0,0,.12);
+      overflow:hidden;
+    }
+    .avatar svg{ width:140px; height:140px; display:block; }
+
+    .falling{
+      position:absolute;
+      top:-110px;
+      width:110px; height:110px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:76px;
+      filter: drop-shadow(0 14px 12px rgba(0,0,0,.14));
+      z-index:3;
+      will-change: transform;
+    }
+
+    .particle{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:999px;
+      opacity:.95;
+      z-index:6;
+      pointer-events:none;
+      animation: puff 520ms ease-out forwards;
+    }
+    @keyframes puff{
+      0%{transform: translate(0,0) scale(.8); opacity:1}
+      100%{transform: translate(var(--dx), var(--dy)) scale(0.2); opacity:0}
+    }
+
+    .splat{
+      position:absolute;
+      width:140px; height:140px;
+      border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+      background: rgba(120,70,25,.22);
+      border: 1px solid rgba(0,0,0,.08);
+      z-index:5;
+      pointer-events:none;
+      animation: splat 520ms ease-out forwards;
+    }
+    @keyframes splat{
+      0%{transform: scale(.4); opacity:0}
+      20%{transform: scale(1.05); opacity:1}
+      100%{transform: scale(1.2); opacity:0}
+    }
+
+    .sfx{
+      position:absolute;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.92);
+      border:1px solid rgba(0,0,0,.10);
+      color:#222;
+      font-weight:1000;
+      letter-spacing:.8px;
+      text-transform:uppercase;
+      font-size:12px;
+      opacity:0;
+      pointer-events:none;
+      z-index:7;
+      transform: translateY(10px) scale(.9);
+      box-shadow: 0 12px 22px rgba(0,0,0,.10);
+    }
+    .sfx.show{ animation: pop 520ms ease forwards; }
+    @keyframes pop{
+      0%{opacity:0; transform: translateY(10px) scale(.85)}
+      18%{opacity:1; transform: translateY(0) scale(1.05)}
+      100%{opacity:0; transform: translateY(-20px) scale(1.05)}
+    }
+
+    .controls{
+      display:flex; gap:10px;
+      padding:12px 14px 14px;
+      border-top:1px solid #00000010;
+      background: linear-gradient(180deg, #ffffffc7, #ffffffa6);
+      flex-wrap:wrap;
+    }
+    .moveBtns{display:flex; gap:10px; flex-wrap:wrap; width:100%}
+    .moveBtns button{
+      flex:1;
+      min-width:110px;
+      padding:16px 12px;
+      font-size:16px;
+      border-radius:18px;
+      background:#ffffffd6;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <div class="pad">
+        <h1>Cascata Pop (Super Easy)</h1>
+        <div class="sub">Prendi <b>🍕</b> e <b>⭐</b> (punti) · <b>💩</b> fa ridere (mai game over).</div>
+
+        <div class="row">
+          <button class="btn-primary" id="startBtn">Avvia</button>
+          <button class="btn-ghost" id="pauseBtn">Pausa</button>
+          <button class="btn-warn" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="row">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:12px; color:#555;">Personaggio</label>
+            <select id="character">
+              <option value="tmnt-leo">Tartaruga Ninja (Leonardo) 🐢🔵</option>
+              <option value="tmnt-mike">Tartaruga Ninja (Michelangelo) 🐢🟠</option>
+              <option value="tmnt-don">Tartaruga Ninja (Donatello) 🐢🟣</option>
+              <option value="tmnt-raph">Tartaruga Ninja (Raffaello) 🐢🔴</option>
+              <option value="unicorn">Unicorno (faccia) 🦄</option>
+              <option value="girl">Bimba (capelli mori, pelle rosa) 👧</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <label style="display:flex; align-items:center; gap:10px; font-size:13px;">
+            <input id="sound" type="checkbox" checked /> Suoni buffi (da internet)
+          </label>
+
+          <label style="display:flex; align-items:center; gap:10px; font-size:13px;">
+            <input id="noFart" type="checkbox" /> Solo risate (niente scoregge)
+          </label>
+
+          <span class="pill">Distanza OGGETTI: x2 ✅</span>
+        </div>
+
+        <div class="row">
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <label style="font-size:12px; color:#555;">Sound Pack</label>
+            <select id="soundPack">
+              <option value="puzzetta">Puzzetta 😄💨</option>
+              <option value="arcade">Arcade 🕹️</option>
+              <option value="soft">Soft 🧸</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="n" id="score">0</div><div class="t">Punti</div></div>
+          <div class="kpi"><div class="n" id="streak">0</div><div class="t">Combo</div></div>
+          <div class="kpi"><div class="n" id="level">1</div><div class="t">Livello</div></div>
+          <div class="kpi"><div class="n" id="speed">1.00x</div><div class="t">Velocità</div></div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi"><div class="n" id="good">0</div><div class="t">Presi 🍕⭐</div></div>
+          <div class="kpi"><div class="n" id="bonks">0</div><div class="t">Colpita 💩</div></div>
+        </div>
+
+        <div class="hint">
+          Tap (sinistra/centro/destra) o bottoni grandi. Fine quando vuoi.
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="topbar">
+        <div class="badge">PG: <b id="charBadge">🐢🔵</b></div>
+        <div class="badge">Stato: <b id="stateBadge">Pronto</b></div>
+        <div class="badge">🎯🍕⭐ · 🚫💩</div>
+      </div>
+
+      <div class="arena" id="arena">
+        <div class="cloud" style="left:-280px; top:22px; animation-duration: 14s;"></div>
+        <div class="cloud" style="left:-340px; top:90px; width:260px; height:78px; opacity:.70; animation-duration: 18s;"></div>
+
+        <div class="lanes"><div class="lane"></div><div class="lane"></div><div class="lane"></div></div>
+
+        <div class="arenaInner" id="arenaInner">
+          <div class="player" id="player"><div class="avatar" id="avatar"></div></div>
+          <div class="sfx" id="sfx">START!</div>
+        </div>
+
+        <div class="floor"></div>
+      </div>
+
+      <div class="controls">
+        <div class="moveBtns">
+          <button id="leftBtn">← Sinistra</button>
+          <button id="midBtn">• Centro</button>
+          <button id="rightBtn">Destra →</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    const arena = $("arena");
+    const inner = $("arenaInner");
+    const player = $("player");
+    const avatar = $("avatar");
+    const sfxEl = $("sfx");
+
+    const characterSel = $("character");
+    const soundChk = $("sound");
+    const noFartChk = $("noFart");
+    const soundPackSel = $("soundPack");
+
+    const startBtn = $("startBtn");
+    const pauseBtn = $("pauseBtn");
+    const resetBtn = $("resetBtn");
+
+    const leftBtn = $("leftBtn");
+    const midBtn  = $("midBtn");
+    const rightBtn= $("rightBtn");
+
+    const charBadge = $("charBadge");
+    const stateBadge= $("stateBadge");
+
+    const scoreEl = $("score");
+    const streakEl= $("streak");
+    const levelEl = $("level");
+    const speedEl = $("speed");
+    const goodEl  = $("good");
+    const bonksEl = $("bonks");
+
+    // =========================
+    //  AVATAR SVG (cartoon)
+    // =========================
+    function turtleSVG(maskColor="#2aa4ff", accent="#0c5a8f"){
+      return `
+        <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="tg" cx="30%" cy="25%" r="80%">
+              <stop offset="0" stop-color="#ebfff3"/>
+              <stop offset="1" stop-color="#87eab7"/>
+            </radialGradient>
+          </defs>
+
+          <circle cx="70" cy="72" r="60" fill="url(#tg)" stroke="rgba(0,0,0,.10)" stroke-width="2"/>
+
+          <path d="M18 60c16-18 88-18 104 0c-10 26-94 26-104 0z" fill="${maskColor}" opacity=".95"/>
+          <path d="M104 64l20 11l-18 9z" fill="${maskColor}" opacity=".90"/>
+          <path d="M102 62l20-7l-11 18z" fill="${maskColor}" opacity=".86"/>
+
+          <ellipse cx="52" cy="72" rx="15" ry="12" fill="#fff"/>
+          <ellipse cx="88" cy="72" rx="15" ry="12" fill="#fff"/>
+          <circle cx="56" cy="74" r="5.5" fill="#222"/>
+          <circle cx="92" cy="74" r="5.5" fill="#222"/>
+          <circle cx="58" cy="71" r="2" fill="#fff" opacity=".9"/>
+          <circle cx="94" cy="71" r="2" fill="#fff" opacity=".9"/>
+
+          <path d="M52 98c10 10 26 10 36 0" fill="none" stroke="#2a2a2a" stroke-width="5" stroke-linecap="round"/>
+
+          <circle cx="40" cy="92" r="6" fill="${accent}" opacity=".35"/>
+          <circle cx="100" cy="92" r="6" fill="${accent}" opacity=".35"/>
+
+          <path d="M52 112c14 10 22 10 36 0" fill="none" stroke="rgba(0,0,0,.10)" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+
+    const SVG = {
+      "tmnt-leo": turtleSVG("#2aa4ff", "#0c5a8f"),
+      "tmnt-mike": turtleSVG("#ff9a3c", "#a84c00"),
+      "tmnt-don": turtleSVG("#a56dff", "#5a2aa5"),
+      "tmnt-raph": turtleSVG("#ff4f6a", "#8f0c1b"),
+
+      unicorn: `
+        <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="u" cx="30%" cy="25%" r="80%">
+              <stop offset="0" stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#f7d9ff"/>
+            </radialGradient>
+          </defs>
+          <circle cx="70" cy="70" r="62" fill="url(#u)" stroke="rgba(0,0,0,.10)" stroke-width="2"/>
+          <path d="M70 18l10 34H60z" fill="#ffd34d" stroke="rgba(0,0,0,.10)" stroke-width="2"/>
+          <path d="M28 58c10-22 38-28 62-18c-6 16-28 22-62 18z" fill="#6be6ff" opacity=".85"/>
+          <path d="M34 78c14-12 40-12 70 0c-12 20-50 24-70 0z" fill="#ff7bd6" opacity=".75"/>
+          <ellipse cx="54" cy="78" rx="14" ry="12" fill="#fff"/>
+          <ellipse cx="90" cy="78" rx="14" ry="12" fill="#fff"/>
+          <circle cx="58" cy="80" r="5.5" fill="#222"/>
+          <circle cx="94" cy="80" r="5.5" fill="#222"/>
+          <path d="M56 104c10 8 22 8 32 0" fill="none" stroke="#2a2a2a" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="42" cy="96" r="6" fill="#ffd34d" opacity=".55"/>
+          <circle cx="98" cy="96" r="6" fill="#ffd34d" opacity=".55"/>
+        </svg>
+      `,
+
+      girl: `
+        <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="70" cy="70" r="62" fill="#ffd1dc" stroke="rgba(0,0,0,.10)" stroke-width="2"/>
+          <path d="M18 70c0-34 28-56 52-56s52 22 52 56c-14-12-28-18-52-18S32 58 18 70z"
+                fill="#2c1b14" opacity=".95"/>
+          <path d="M24 78c4 28 22 46 46 46s42-18 46-46c-14 10-30 14-46 14S38 88 24 78z"
+                fill="#2c1b14" opacity=".92"/>
+          <ellipse cx="52" cy="78" rx="14" ry="12" fill="#fff"/>
+          <ellipse cx="88" cy="78" rx="14" ry="12" fill="#fff"/>
+          <circle cx="56" cy="80" r="5.5" fill="#222"/>
+          <circle cx="92" cy="80" r="5.5" fill="#222"/>
+          <path d="M56 104c10 9 22 9 32 0" fill="none" stroke="#2a2a2a" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="40" cy="96" r="6" fill="#ff79b0" opacity=".45"/>
+          <circle cx="100" cy="96" r="6" fill="#ff79b0" opacity=".45"/>
+        </svg>
+      `
+    };
+
+    // =========================
+    //  SUONI (Sound Packs)
+    // =========================
+    // Nota: suoni presi da Wikimedia Commons (varie licenze: PD / CC). Se pubblichi online, aggiungi una riga "Credits".
+    // (Se vuoi ti preparo io una sezione Credits pulita.)
+
+    const SOUND_PACKS = {
+      puzzetta: {
+        vols: { good:0.45, bonus:0.55, bad:0.70, level:0.55, start:0.50, giggle:0.40, fart:0.75 },
+        good: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Mouth_pop.ogg/Mouth_pop.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/16/Dropmetalthing.ogg/Dropmetalthing.ogg.mp3",
+        ],
+        bonus: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ee/Boing_raw.ogg/Boing_raw.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+        ],
+        bad: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/cf/Fart.ogg/Fart.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/97/Comic_vanishing_magic_trick.ogg/Comic_vanishing_magic_trick.ogg.mp3",
+        ],
+        level: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ee/Boing_raw.ogg/Boing_raw.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+        ],
+        start: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Mouth_pop.ogg/Mouth_pop.ogg.mp3",
+        ],
+        giggle: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/En-us-giggle.ogg/En-us-giggle.ogg.mp3"
+        ],
+        // extra fart random (solo in questo pack)
+        fart: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/cf/Fart.ogg/Fart.ogg.mp3"
+        ],
+      },
+
+      arcade: {
+        vols: { good:0.45, bonus:0.55, bad:0.55, level:0.55, start:0.50, giggle:0.35 },
+        good: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Mouth_pop.ogg/Mouth_pop.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ee/Boing_raw.ogg/Boing_raw.ogg.mp3",
+        ],
+        bonus: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ee/Boing_raw.ogg/Boing_raw.ogg.mp3",
+        ],
+        bad: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/97/Comic_vanishing_magic_trick.ogg/Comic_vanishing_magic_trick.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/1/16/Dropmetalthing.ogg/Dropmetalthing.ogg.mp3"
+        ],
+        level: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/e/ee/Boing_raw.ogg/Boing_raw.ogg.mp3",
+        ],
+        start: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Mouth_pop.ogg/Mouth_pop.ogg.mp3",
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+        ],
+        giggle: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/En-us-giggle.ogg/En-us-giggle.ogg.mp3"
+        ],
+        fart: []
+      },
+
+      soft: {
+        vols: { good:0.35, bonus:0.40, bad:0.40, level:0.40, start:0.35, giggle:0.30 },
+        good: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Mouth_pop.ogg/Mouth_pop.ogg.mp3",
+        ],
+        bonus: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+        ],
+        bad: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/9/97/Comic_vanishing_magic_trick.ogg/Comic_vanishing_magic_trick.ogg.mp3",
+        ],
+        level: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/4/4e/Comic_spring_up_or_magic_trick.ogg/Comic_spring_up_or_magic_trick.ogg.mp3",
+        ],
+        start: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c1/Mouth_pop.ogg/Mouth_pop.ogg.mp3",
+        ],
+        giggle: [
+          "https://upload.wikimedia.org/wikipedia/commons/transcoded/0/09/En-us-giggle.ogg/En-us-giggle.ogg.mp3"
+        ],
+        fart: []
+      }
+    };
+
+    let currentPack = soundPackSel.value || "puzzetta";
+
+    const pick = (arr) => arr[Math.floor(Math.random()*arr.length)];
+
+    // pools per audio tag
+    let audioUnlocked = false;
+    const pools = new Map(); // url -> {arr: Audio[], i: number}
+
+    function unlockAudio(){
+      if(audioUnlocked) return;
+      audioUnlocked = true;
+      preloadAllSounds();
+    }
+
+    function clearPools(){
+      pools.forEach(p=>{
+        p.arr.forEach(a=>{
+          try{ a.pause(); }catch(e){}
+        });
+      });
+      pools.clear();
+    }
+
+    function makePool(url, vol){
+      const POOL = 3;
+      const arr = [];
+      for(let i=0;i<POOL;i++){
+        const a = new Audio(url);
+        a.preload = "auto";
+        a.crossOrigin = "anonymous";
+        a.volume = Math.max(0.0, Math.min(1.0, vol));
+        arr.push(a);
+      }
+      return {arr, i:0};
+    }
+
+    function isFartUrl(url){
+      return /fart/i.test(url) || url.includes("Fart.ogg");
+    }
+
+    function listForKind(kind){
+      const pack = SOUND_PACKS[currentPack] || SOUND_PACKS.puzzetta;
+      let list = (pack[kind] || []).slice();
+
+      // Family Mode: via qualsiasi "fart"
+      if(noFartChk.checked){
+        list = list.filter(u => !isFartUrl(u));
+      }
+      return list;
+    }
+
+    function volForKind(kind){
+      const pack = SOUND_PACKS[currentPack] || SOUND_PACKS.puzzetta;
+      return (pack.vols && pack.vols[kind] != null) ? pack.vols[kind] : 0.5;
+    }
+
+    function preloadAllSounds(){
+      const kinds = ["good","bonus","bad","level","start","giggle","fart"];
+      const pack = SOUND_PACKS[currentPack] || SOUND_PACKS.puzzetta;
+
+      kinds.forEach(kind=>{
+        const list = (pack[kind] || []);
+        list.forEach(url=>{
+          // anche se Family Mode è ON, li teniamo in cache solo quando non è fart
+          if(noFartChk.checked && isFartUrl(url)) return;
+          if(!pools.has(url)) pools.set(url, makePool(url, volForKind(kind)));
+        });
+      });
+    }
+
+    function applySoundPack(){
+      currentPack = soundPackSel.value || "puzzetta";
+      clearPools();
+      if(audioUnlocked) preloadAllSounds();
+      showSfx(`SOUND: ${currentPack.toUpperCase()}`, 55, 18);
+    }
+
+    // fallback sintetico (se autoplay/retE blocca)
+    let audioCtx = null;
+    function ensureAudioCtx(){
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === "suspended") audioCtx.resume().catch(()=>{});
+    }
+    function fallbackBeep(kind){
+      if(!soundChk.checked) return;
+      try{
+        ensureAudioCtx();
+        const ctx = audioCtx;
+        const now = ctx.currentTime;
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "triangle";
+        let base = 260;
+        if(kind === "good") base = 520;
+        if(kind === "bonus") base = 860;
+        if(kind === "bad") base = 160;
+        if(kind === "level") base = 640;
+        o.frequency.setValueAtTime(base, now);
+        o.frequency.exponentialRampToValueAtTime(base * 1.22, now + 0.05);
+        o.frequency.exponentialRampToValueAtTime(base * 0.95, now + 0.12);
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(0.07, now + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(now); o.stop(now + 0.18);
+      }catch(e){}
+    }
+
+    function playSfx(kind){
+      if(!soundChk.checked) return;
+      if(!audioUnlocked) return;
+
+      const list = listForKind(kind);
+      if(!list.length){ fallbackBeep(kind); return; }
+
+      const url = pick(list);
+      if(!pools.has(url)) pools.set(url, makePool(url, volForKind(kind)));
+
+      const p = pools.get(url);
+      const a = p.arr[p.i];
+      p.i = (p.i + 1) % p.arr.length;
+
+      // aggiorna volume in caso siano cambiate impostazioni
+      a.volume = volForKind(kind);
+
+      try{
+        a.currentTime = 0;
+        const prom = a.play();
+        if(prom && prom.catch) prom.catch(()=>fallbackBeep(kind));
+      }catch(e){
+        fallbackBeep(kind);
+      }
+    }
+
+    // =========================
+    //  ITEMS + SFX text
+    // =========================
+    const ITEMS = [
+      { glyph:"💩", kind:"bad"   },
+      { glyph:"🍕", kind:"good"  },
+      { glyph:"⭐", kind:"bonus" }
+    ];
+
+    const SFX_TEXT = {
+      good:  ["GNAM!", "YUM!", "PIZZA!", "BRAVA!", "EVVIVA!"],
+      bonus: ["WOW!", "SPARK!", "TADA!", "SUPER!", "KIRA!"],
+      bad:   ["PLOP!", "BLEH!", "NOOO!", "PUAH!", "PLOPPO!"],
+      level: ["LEVEL UP!", "GO GO!", "WOW!", "HYPE!"],
+      start: ["START!", "VAI!", "GO!", "YEAH!"],
+    };
+
+    // ------- State -------
+    let lane = 1;
+    let running = false;
+    let paused = false;
+
+    let score = 0;
+    let streak = 0;
+    let goodCount = 0;
+    let bonks = 0;
+
+    let level = 1;
+    let speedMult = 1.0;
+
+    let spawnTimer = null;
+    let raf = null;
+    const falling = [];
+    let lastSpawnAt = 0;
+
+    function showSfx(text, xPct=50, yPct=25){
+      sfxEl.textContent = text;
+      sfxEl.style.left = `calc(${xPct}% - 44px)`;
+      sfxEl.style.top  = `calc(${yPct}% - 16px)`;
+      sfxEl.classList.remove("show");
+      void sfxEl.offsetWidth;
+      sfxEl.classList.add("show");
+    }
+
+    function updateBadges(){
+      const k = characterSel.value;
+
+      if(k.startsWith("tmnt-")){
+        charBadge.textContent =
+          (k==="tmnt-leo")  ? "🐢🔵" :
+          (k==="tmnt-mike") ? "🐢🟠" :
+          (k==="tmnt-don")  ? "🐢🟣" :
+          "🐢🔴";
+      } else if(k === "unicorn"){
+        charBadge.textContent = "🦄";
+      } else {
+        charBadge.textContent = "👧";
+      }
+
+      avatar.innerHTML = SVG[k] || SVG["tmnt-leo"];
+    }
+
+    function setState(txt){ stateBadge.textContent = txt; }
+
+    function laneToLeftPx(l){
+      const w = arena.clientWidth;
+      const laneW = w / 3;
+      const x = (l * laneW) + (laneW / 2);
+      return x - (player.clientWidth / 2);
+    }
+    function placePlayer(){ player.style.left = `${laneToLeftPx(lane)}px`; }
+
+    function bopPlayer(){
+      player.classList.remove("bop");
+      void player.offsetWidth;
+      player.classList.add("bop");
+    }
+    function shakeArena(){
+      inner.classList.remove("shake");
+      void inner.offsetWidth;
+      inner.classList.add("shake");
+    }
+
+    function burst(x, y, palette){
+      const n = 12;
+      for(let i=0;i<n;i++){
+        const p = document.createElement("div");
+        p.className = "particle";
+        const ang = Math.random() * Math.PI * 2;
+        const dist = 30 + Math.random()*60;
+        const dx = Math.cos(ang) * dist;
+        const dy = Math.sin(ang) * dist - 10;
+        p.style.left = (x - 5) + "px";
+        p.style.top  = (y - 5) + "px";
+        p.style.setProperty("--dx", dx + "px");
+        p.style.setProperty("--dy", dy + "px");
+        p.style.background = palette[Math.floor(Math.random()*palette.length)];
+        arena.appendChild(p);
+        setTimeout(()=>p.remove(), 600);
+      }
+    }
+    function splat(x, y){
+      const s = document.createElement("div");
+      s.className = "splat";
+      s.style.left = (x - 70) + "px";
+      s.style.top  = (y - 70) + "px";
+      arena.appendChild(s);
+      setTimeout(()=>s.remove(), 650);
+    }
+
+    // ------- Difficulty (DISTANZA x2) -------
+    function updateLeveling(){
+      const target = 1 + Math.floor(goodCount / 18);
+      if(target > level){
+        level = target;
+        speedMult = 1 + (level - 1) * 0.08;
+        levelEl.textContent = String(level);
+        speedEl.textContent = `${speedMult.toFixed(2)}x`;
+        showSfx(pick(SFX_TEXT.level), 55, 18);
+        playSfx("level");
+        restartSpawner();
+      }
+    }
+
+    function spawnCadenceMs(){
+      const ms = 2500 / speedMult;
+      return Math.max(1050, ms);
+    }
+
+    function minSpawnGapMs(){
+      const base = 1040;
+      const extra = Math.max(0, 240 - (level * 8));
+      return base + extra;
+    }
+
+    function fallPxPerFrame(){
+      return (1.75 * speedMult) + (level * 0.06);
+    }
+
+    function spawnOne(){
+      const now = performance.now();
+      if(now - lastSpawnAt < minSpawnGapMs()) return;
+      lastSpawnAt = now;
+
+      const r = Math.random();
+      let item = ITEMS[0];
+      if(r < 0.60) item = ITEMS[1];
+      else if(r < 0.92) item = ITEMS[2];
+      else item = ITEMS[0];
+
+      const f = document.createElement("div");
+      f.className = "falling";
+      f.textContent = item.glyph;
+      f.dataset.kind = item.kind;
+
+      const laneIndex = (Math.random() < 0.65) ? ((lane + (Math.random()<0.5 ? 1 : 2)) % 3) : Math.floor(Math.random()*3);
+      f.dataset.lane = String(laneIndex);
+
+      const w = arena.clientWidth;
+      const laneW = w / 3;
+      const x = (laneIndex * laneW) + (laneW / 2);
+      f.style.left = `${x - 55}px`;
+
+      f.dataset.y = "-110";
+      f.dataset.done = "0";
+
+      inner.appendChild(f);
+      falling.push(f);
+    }
+
+    function restartSpawner(){
+      if(spawnTimer) clearInterval(spawnTimer);
+      if(!running) return;
+
+      spawnTimer = setInterval(() => {
+        if(!running || paused) return;
+        spawnOne();
+      }, spawnCadenceMs());
+    }
+
+    function applyCollision(kind, hitX, hitY){
+      bopPlayer();
+
+      if(kind === "bad"){
+        bonks++;
+        bonksEl.textContent = String(bonks);
+        streak = 0;
+        streakEl.textContent = "0";
+        showSfx(pick(SFX_TEXT.bad), 50, 62);
+
+        playSfx("bad");
+
+        splat(hitX, hitY);
+        burst(hitX, hitY, ["#7b4a1a","#9a5a22","#c47a3a","#ffe1c8"]);
+        shakeArena();
+        return;
+      }
+
+      goodCount++;
+      goodEl.textContent = String(goodCount);
+
+      streak++;
+      streakEl.textContent = String(streak);
+
+      const base = (kind === "bonus") ? 20 : 10;
+      const mult = Math.min(4, 1 + Math.floor(streak / 8));
+      const gained = base * mult;
+
+      score += gained;
+      scoreEl.textContent = String(score);
+
+      showSfx(kind === "bonus" ? pick(SFX_TEXT.bonus) : pick(SFX_TEXT.good), 50, 42);
+
+      playSfx(kind === "bonus" ? "bonus" : "good");
+
+      if(kind === "bonus") burst(hitX, hitY, ["#ffd34d","#ff7bd6","#6be6ff","#ffffff"]);
+      else burst(hitX, hitY, ["#ff9ad5","#7cffc6","#fff07a","#ffffff"]);
+
+      updateLeveling();
+    }
+
+    function tick(){
+      if(!running) return;
+      if(paused){ raf = requestAnimationFrame(tick); return; }
+
+      // risatina rara random
+      if(soundChk.checked && audioUnlocked && Math.random() < 0.0008) playSfx("giggle");
+
+      // extra “puzzetta” random (MAI se "Solo risate" è ON)
+      if(soundChk.checked && audioUnlocked && currentPack === "puzzetta" && !noFartChk.checked && Math.random() < 0.0007){
+        playSfx("fart");
+      }
+
+      const fall = fallPxPerFrame();
+      const hitLine = arena.clientHeight - 195;
+      const missLine = arena.clientHeight + 160;
+
+      for(let i = falling.length - 1; i >= 0; i--){
+        const f = falling[i];
+        const y = Number(f.dataset.y) + fall;
+        f.dataset.y = String(y);
+        f.style.transform = `translateY(${y}px)`;
+
+        if(f.dataset.done === "0" && y >= hitLine && y <= hitLine + 44){
+          const fLane = Number(f.dataset.lane);
+          if(fLane === lane){
+            f.dataset.done = "1";
+
+            const rectA = arena.getBoundingClientRect();
+            const rectF = f.getBoundingClientRect();
+            const hitX = (rectF.left - rectA.left) + rectF.width/2;
+            const hitY = (rectF.top - rectA.top) + rectF.height/2;
+
+            applyCollision(f.dataset.kind, hitX, hitY);
+
+            f.remove();
+            falling.splice(i, 1);
+            continue;
+          }
+        }
+
+        if(y > missLine){
+          f.remove();
+          falling.splice(i, 1);
+        }
+      }
+
+      raf = requestAnimationFrame(tick);
+    }
+
+    function start(){
+      if(running) return;
+
+      unlockAudio();
+      preloadAllSounds();
+
+      running = true;
+      paused = false;
+      setState("In corso");
+      pauseBtn.textContent = "Pausa";
+      lastSpawnAt = 0;
+
+      updateBadges();
+      placePlayer();
+      showSfx(pick(SFX_TEXT.start), 52, 18);
+      playSfx("start");
+
+      restartSpawner();
+      raf = requestAnimationFrame(tick);
+    }
+
+    function togglePause(){
+      if(!running) return;
+      paused = !paused;
+      setState(paused ? "Pausa" : "In corso");
+      pauseBtn.textContent = paused ? "Riprendi" : "Pausa";
+      showSfx(paused ? "PAUSE..." : "GO!", 55, 18);
+    }
+
+    function reset(){
+      running = false;
+      paused = false;
+
+      if(spawnTimer) clearInterval(spawnTimer);
+      spawnTimer = null;
+      if(raf) cancelAnimationFrame(raf);
+      raf = null;
+
+      while(falling.length){
+        const f = falling.pop();
+        if(f) f.remove();
+      }
+
+      lane = 1;
+      score = 0; streak = 0; goodCount = 0; bonks = 0;
+      level = 1; speedMult = 1.0;
+
+      scoreEl.textContent = "0";
+      streakEl.textContent = "0";
+      goodEl.textContent = "0";
+      bonksEl.textContent = "0";
+      levelEl.textContent = "1";
+      speedEl.textContent = "1.00x";
+
+      setState("Pronto");
+      pauseBtn.textContent = "Pausa";
+      lastSpawnAt = 0;
+
+      updateBadges();
+      placePlayer();
+      showSfx("RESET!", 52, 18);
+    }
+
+    function moveLeft(){ lane = Math.max(0, lane - 1); placePlayer(); }
+    function moveRight(){ lane = Math.min(2, lane + 1); placePlayer(); }
+    function moveMid(){ lane = 1; placePlayer(); }
+
+    // ------- Eventi -------
+    startBtn.addEventListener("click", () => { if(!running) start(); });
+    pauseBtn.addEventListener("click", () => { if(!running) start(); else togglePause(); });
+    resetBtn.addEventListener("click", reset);
+
+    leftBtn.addEventListener("click", () => { unlockAudio(); moveLeft(); });
+    midBtn.addEventListener("click", () => { unlockAudio(); moveMid(); });
+    rightBtn.addEventListener("click", () => { unlockAudio(); moveRight(); });
+
+    characterSel.addEventListener("change", updateBadges);
+
+    soundPackSel.addEventListener("change", () => { unlockAudio(); applySoundPack(); });
+    noFartChk.addEventListener("change", () => { unlockAudio(); applySoundPack(); });
+
+    arena.addEventListener("pointerdown", (e) => {
+      unlockAudio();
+      const rect = arena.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const third = rect.width / 3;
+      if(x < third) moveLeft();
+      else if(x > 2 * third) moveRight();
+      else moveMid();
+    });
+
+    window.addEventListener("resize", placePlayer);
+
+    // init
+    updateBadges();
+    placePlayer();
+    setState("Pronto");
+    applySoundPack();
+  </script>
+</body>
+</html>
