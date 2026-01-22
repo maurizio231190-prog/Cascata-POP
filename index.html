@@ -13,42 +13,31 @@
 <canvas id="c"></canvas>
 
 <script>
-/**
- * PROTOTIPO "CASCATA POP"
- * - Sfondo immagine (NON modificato) + oggetti che scendono in 5 corsie
- * - Player piccolo in basso: selezionabile via tasti 1/2/3 (bimbo/bimba/coniglio)
- * - Controlli: trascina col dito per spostarti di corsia (o frecce sx/dx)
- * - Buoni: punti, Cattivi: perdi vita
- */
+const BG_CANDIDATES = [
+  "bg.png", "BG.png", "bg.PNG",
+  "bg.jpg", "bg.jpeg",
+  "background.png", "sfondo.png"
+];
 
-// ====== CONFIG BASE ======
-const BG_SRC = "bg.png";      // <-- metti bg.png nella stessa cartella di index.html
 const LANES = 5;
 
 const cfg = {
-  // prospettiva corsie (convergenza verso l'alto)
-  topY: 0.20,           // dove "nascono" gli oggetti (parte bianca in alto)
-  bottomY: 0.90,        // dove sta il player
-  topSpread: 0.18,      // quanto sono "vicine" le corsie in alto (0.10..0.25)
-  bottomLeft: 0.12,     // area pavimento in basso
+  topY: 0.20,
+  bottomY: 0.90,
+  topSpread: 0.18,
+  bottomLeft: 0.12,
   bottomRight: 0.88,
 
-  // gameplay
   spawnEveryMs: 650,
-  baseSpeed: 0.42,      // più alto = più veloce
-  speedRamp: 0.00006,   // aumenta nel tempo (difficoltà)
-  goodChance: 0.62,     // % buoni
+  baseSpeed: 0.42,
+  speedRamp: 0.00006,
+  goodChance: 0.62,
   lives: 3,
 
-  // hit window vicino al player
   hitT: 0.93,
-  hitWindow: 0.055,
-
-  // debug
-  debugLanes: false
+  hitWindow: 0.055
 };
 
-// ====== CANVAS SETUP ======
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 
@@ -61,13 +50,11 @@ function resize() {
 addEventListener("resize", resize);
 resize();
 
-// ====== UTILS ======
 const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp = (a,b,t)=>a+(b-a)*t;
 const easeIn = (t)=>t*t;
 
 function laneX(laneIndex, tNorm, w) {
-  // tNorm: 0 in alto -> 1 in basso
   const r = (LANES===1) ? 0.5 : laneIndex/(LANES-1);
   const topCenter = 0.5;
   const topLeft  = topCenter - cfg.topSpread/2;
@@ -79,13 +66,11 @@ function laneX(laneIndex, tNorm, w) {
 }
 
 function yFromT(tNorm, h) {
-  // easing per dare feeling "vengono verso di te"
   const t = easeIn(clamp(tNorm, 0, 1));
   return lerp(cfg.topY*h, cfg.bottomY*h, t);
 }
 
 function scaleFromT(tNorm) {
-  // piccolo in alto, grande in basso
   return lerp(0.35, 1.05, clamp(tNorm,0,1));
 }
 
@@ -99,17 +84,37 @@ function nearestLaneAtBottom(x, w) {
   return best;
 }
 
-// ====== ASSETS ======
+// ===== BACKGROUND LOADER (ANTI-NERO) =====
 const bgImg = new Image();
-bgImg.src = BG_SRC;
-let bgReady = false;
-bgImg.onload = ()=> bgReady = true;
-bgImg.onerror = ()=> {
-  bgReady = false;
-  console.warn("Sfondo non trovato. Metti bg.png nella stessa cartella di index.html");
-};
+bgImg.crossOrigin = "anonymous";
 
-// ====== GAME STATE ======
+let bgReady = false;
+let bgLoading = true;
+let bgChosen = "";
+let bgTried = [];
+let bgFailed = false;
+
+function tryLoadBg(i=0) {
+  if (i >= BG_CANDIDATES.length) {
+    bgLoading = false;
+    bgFailed = true;
+    return;
+  }
+  const src = BG_CANDIDATES[i];
+  bgTried.push(src);
+
+  bgImg.onload = () => {
+    bgChosen = src;
+    bgReady = true;
+    bgLoading = false;
+  };
+  bgImg.onerror = () => tryLoadBg(i+1);
+
+  bgImg.src = src + "?v=" + Date.now(); // cache-buster
+}
+tryLoadBg();
+
+// ===== GAME STATE =====
 let started = false;
 let lastTs = 0;
 let elapsed = 0;
@@ -133,7 +138,6 @@ function resetGame() {
   state.nextSpawn = 0;
 }
 
-// ====== DRAW HELPERS ======
 function drawKawaiiFace(x, y, r) {
   ctx.fillStyle = "rgba(0,0,0,0.85)";
   ctx.beginPath(); ctx.arc(x - r*0.35, y - r*0.10, r*0.10, 0, Math.PI*2); ctx.fill();
@@ -160,13 +164,12 @@ function drawPlayer(x, y, s, skin) {
     ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
 
     ctx.fillStyle = (skin==="girl") ? "rgba(230,200,80,0.95)" : "rgba(120,70,30,0.95)";
-    ctx.beginPath();
-    ctx.arc(0, -r*0.2, r*1.05, Math.PI, 0);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(0, -r*0.2, r*1.05, Math.PI, 0); ctx.fill();
 
     ctx.fillStyle = "rgba(60,220,140,0.95)";
     ctx.beginPath(); ctx.arc(-r*1.05, 0, r*0.35, 0, Math.PI*2); ctx.fill();
     ctx.beginPath(); ctx.arc( r*1.05, 0, r*0.35, 0, Math.PI*2); ctx.fill();
+
     ctx.strokeStyle = "rgba(30,30,30,0.7)";
     ctx.lineWidth = Math.max(2, r*0.12);
     ctx.beginPath(); ctx.arc(0, -r*0.65, r*1.1, Math.PI*1.05, Math.PI*1.95); ctx.stroke();
@@ -214,7 +217,6 @@ function roundRect(x, y, w, h, r) {
 }
 
 function drawBad(x, y, s) {
-  // cubo arrabbiato con cappello + megafono (nessuna arma)
   const size = 44 * s;
   const r = 10 * s;
   ctx.fillStyle = "rgba(255,200,70,0.95)";
@@ -254,16 +256,10 @@ function drawBad(x, y, s) {
   ctx.fill();
 }
 
-// ====== SPAWN & UPDATE ======
 function spawnObstacle() {
   const lane = Math.floor(Math.random() * LANES);
   const isGood = Math.random() < cfg.goodChance;
-  state.obstacles.push({
-    lane,
-    t: 0,
-    kind: isGood ? "good" : "bad",
-    taken: false
-  });
+  state.obstacles.push({ lane, t: 0, kind: isGood ? "good" : "bad", taken: false });
 }
 
 function update(dt) {
@@ -277,7 +273,6 @@ function update(dt) {
   }
 
   const speed = cfg.baseSpeed + elapsed * cfg.speedRamp;
-
   for (const o of state.obstacles) o.t += dt * speed;
 
   for (const o of state.obstacles) {
@@ -298,23 +293,41 @@ function update(dt) {
   state.obstacles = state.obstacles.filter(o => o.t < 1.15 && !o.taken);
 }
 
-// ====== RENDER ======
 function drawBgCover() {
   const w = innerWidth, h = innerHeight;
-  if (!bgReady) {
-    ctx.fillStyle = "#0b0010";
-    ctx.fillRect(0,0,w,h);
-    ctx.fillStyle = "rgba(255,255,255,0.7)";
-    ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto";
-    ctx.fillText("Manca bg.png nella cartella del sito.", 14, 24);
+
+  if (bgReady) {
+    const iw = bgImg.naturalWidth, ih = bgImg.naturalHeight;
+    const s = Math.max(w/iw, h/ih);
+    const dw = iw*s, dh = ih*s;
+    const dx = (w - dw)/2;
+    const dy = (h - dh)/2;
+    ctx.drawImage(bgImg, dx, dy, dw, dh);
     return;
   }
-  const iw = bgImg.naturalWidth, ih = bgImg.naturalHeight;
-  const s = Math.max(w/iw, h/ih);
-  const dw = iw*s, dh = ih*s;
-  const dx = (w - dw)/2;
-  const dy = (h - dh)/2;
-  ctx.drawImage(bgImg, dx, dy, dw, dh);
+
+  // Schermo informativo (così NON è mai “tutto nero” senza spiegazione)
+  ctx.fillStyle = "#0b0010";
+  ctx.fillRect(0,0,w,h);
+
+  ctx.fillStyle = "rgba(255,255,255,0.92)";
+  ctx.font = "18px system-ui, -apple-system, Segoe UI, Roboto";
+  ctx.fillText(bgLoading ? "Carico lo sfondo..." : "Sfondo NON trovato.", 16, 34);
+
+  ctx.font = "14px system-ui, -apple-system, Segoe UI, Roboto";
+  ctx.fillText("Metti bg.png nella stessa cartella di index.html (nome identico).", 16, 58);
+
+  if (bgFailed) {
+    ctx.fillStyle = "rgba(255,120,120,0.95)";
+    ctx.fillText("Ho provato questi nomi:", 16, 86);
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    let y = 108;
+    for (const t of bgTried) {
+      ctx.fillText("• " + t, 16, y);
+      y += 18;
+      if (y > h - 30) break;
+    }
+  }
 }
 
 function drawHud() {
@@ -364,7 +377,6 @@ function render() {
   }
 }
 
-// ====== MAIN LOOP ======
 function loop(ts) {
   if (!lastTs) lastTs = ts;
   const dt = Math.min(0.033, (ts - lastTs)/1000);
@@ -376,7 +388,6 @@ function loop(ts) {
 }
 requestAnimationFrame(loop);
 
-// ====== INPUT ======
 let pointerDown = false;
 
 function startOrRestart() {
